@@ -22,11 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="App Common" />
+        <module name="app-common" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="App Common" target="1.8" />
+      <module name="app-common" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

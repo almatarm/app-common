@@ -5,22 +5,16 @@ import com.almatarm.lego.json.JsonUtil;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
 import org.apache.commons.configuration2.JSONConfiguration;
-import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
-import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.bouncycastle.asn1.ua.DSTU4145NamedCurves.params;
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.c;
 
 /**
  * Created by almatarm on 28/10/2019.
@@ -29,11 +23,17 @@ public class AppSettings {
     public static String SETTING_DIR = ".app-settings";
 
     String appName;
+    boolean screenSizeDependable;
     private Configuration configuration;
     private FileBasedConfigurationBuilder<FileBasedConfiguration> builder;
 
     public AppSettings(String appName) {
         this.appName = appName;
+    }
+
+    public AppSettings(String appName, boolean screenSizeDependable) {
+        this.appName = appName;
+        this.screenSizeDependable = screenSizeDependable;
     }
 
     public Configuration getAppConfiguration() {
@@ -62,23 +62,35 @@ public class AppSettings {
     }
 
     public static File getSettingsFile(String appName) {
+        return getSettingsFile(appName, false);
+    }
+
+    public static File getSettingsFile(String appName, boolean screenSizeDependable) {
         File settingsDir = new File(System.getProperty("user.home"), SETTING_DIR);
         settingsDir.mkdirs();
 
-        List<String> gdResolustions = new ArrayList<String>();
-        GraphicsDevice[] gds = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-        for(GraphicsDevice gd : gds) {
-            int width = gd.getDisplayMode().getWidth();
-            int height = gd.getDisplayMode().getHeight();
-            gdResolustions.add(String.format("%dx%d", width, height));
+        String name;
+        if(screenSizeDependable) {
+            List<String> gdResolustions = new ArrayList<String>();
+            GraphicsDevice[] gds = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+            for (GraphicsDevice gd : gds) {
+                int width = gd.getDisplayMode().getWidth();
+                int height = gd.getDisplayMode().getHeight();
+                gdResolustions.add(String.format("%dx%d", width, height));
+            }
+
+
+            name = String.format("%s - %s - %s - %s.json",
+                    appName,
+                    SystemUtil.getHostName(),
+                    SystemUtil.getOperationSystem().toString(),
+                    gdResolustions.toString());
+        } else {
+            name = String.format("%s - %s - %s.json",
+                    appName,
+                    SystemUtil.getHostName(),
+                    SystemUtil.getOperationSystem().toString());
         }
-
-
-        String name = String.format("%s - %s - %s - %s.json",
-                appName,
-                SystemUtil.getHostName(),
-                SystemUtil.getOperationSystem().toString(),
-                gdResolustions.toString());
         return new File(settingsDir, name);
     }
 
