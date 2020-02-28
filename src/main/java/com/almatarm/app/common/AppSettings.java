@@ -82,16 +82,20 @@ public class AppSettings {
 
             name = String.format("%s - %s - %s - %s.json",
                     appName,
-                    SystemUtil.getHostName(),
+                    getHostNameStripped(),
                     SystemUtil.getOperationSystem().toString(),
                     gdResolustions.toString());
         } else {
             name = String.format("%s - %s - %s.json",
                     appName,
-                    SystemUtil.getHostName(),
+                    getHostNameStripped(),
                     SystemUtil.getOperationSystem().toString());
         }
         return new File(settingsDir, name);
+    }
+
+    private static String getHostNameStripped() {
+        return SystemUtil.getHostName().replaceAll(".local", "");
     }
 
     public static void main(String[] args) {

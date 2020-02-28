@@ -6,7 +6,7 @@
 
     <groupId>com.almatarm</groupId>
     <artifactId>app-common</artifactId>
-    <version>1.01</version>
+    <version>1.02</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
